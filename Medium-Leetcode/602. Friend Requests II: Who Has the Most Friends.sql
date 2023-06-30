@@ -1,0 +1,18 @@
+# Solution 1
+select requester_id as id,
+       (select count(*) from RequestAccepted
+            where id=requester_id or id=accepter_id) as num
+from RequestAccepted
+group by requester_id
+order by num desc limit 1
+
+# Solution 2
+select id1 as id, count(id2) as num
+from
+(select requester_id as id1, accepter_id as id2 
+from request_accepted
+union
+select accepter_id as id1, requester_id as id2 
+from request_accepted) tmp1
+group by id1 
+order by num desc limit 1
